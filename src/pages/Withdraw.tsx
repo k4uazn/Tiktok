@@ -248,8 +248,13 @@ const Withdraw = () => {
         )}
 
         {/* Step 2: Vincular PIX Form */}
-        {step === "vincular" && (
-          <div className="bg-card rounded-xl p-6 shadow-md">
+        <div 
+          className={`bg-card rounded-xl p-6 shadow-md transition-all duration-300 ease-out ${
+            step === "vincular" 
+              ? "opacity-100 translate-y-0 max-h-[600px]" 
+              : "opacity-0 translate-y-8 max-h-0 overflow-hidden p-0"
+          }`}
+        >
             {/* Nome Input */}
             <div className="mb-6">
               <label className="text-sm font-semibold text-foreground block mb-2">
@@ -349,7 +354,6 @@ const Withdraw = () => {
               estampar
             </button>
           </div>
-        )}
 
         {/* Bottom spacing */}
         <div className="h-8" />
