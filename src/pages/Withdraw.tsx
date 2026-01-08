@@ -6,6 +6,42 @@ import coinIcon from "@/assets/coin-icon.png";
 type PixKeyType = "cpf" | "phone" | "email" | "random" | null;
 type Step = "amount" | "method" | "vincular";
 
+// Animated digit component
+const AnimatedDigit = ({ digit }: { digit: string }) => {
+  const [animating, setAnimating] = useState(false);
+  const [prevDigit, setPrevDigit] = useState(digit);
+
+  useEffect(() => {
+    if (prevDigit !== digit) {
+      setAnimating(true);
+      const timer = setTimeout(() => {
+        setPrevDigit(digit);
+        setAnimating(false);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [digit, prevDigit]);
+
+  return (
+    <span className="relative inline-block w-[0.6em] text-center overflow-hidden">
+      <span
+        className={`inline-block transition-all duration-150 ${
+          animating ? "opacity-0 -translate-y-full" : "opacity-100 translate-y-0"
+        }`}
+      >
+        {prevDigit}
+      </span>
+      <span
+        className={`absolute inset-0 transition-all duration-150 ${
+          animating ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"
+        }`}
+      >
+        {digit}
+      </span>
+    </span>
+  );
+};
+
 const Withdraw = () => {
   const navigate = useNavigate();
   const balance = "2.834,72";
@@ -174,8 +210,15 @@ const Withdraw = () => {
           </div>
           <p className="text-center text-sm text-muted-foreground">
             SEU SALDO EXPIRA EM{" "}
-            <span className="text-primary-foreground font-mono">
-              00:{timeLeft.minutes.toString().padStart(2, "0")}:{timeLeft.seconds.toString().padStart(2, "0")}
+            <span className="text-primary-foreground font-mono inline-flex">
+              <AnimatedDigit digit="0" />
+              <AnimatedDigit digit="0" />
+              <span>:</span>
+              <AnimatedDigit digit={timeLeft.minutes.toString().padStart(2, "0")[0]} />
+              <AnimatedDigit digit={timeLeft.minutes.toString().padStart(2, "0")[1]} />
+              <span>:</span>
+              <AnimatedDigit digit={timeLeft.seconds.toString().padStart(2, "0")[0]} />
+              <AnimatedDigit digit={timeLeft.seconds.toString().padStart(2, "0")[1]} />
             </span>
           </p>
         </div>
