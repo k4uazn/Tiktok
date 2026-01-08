@@ -225,89 +225,97 @@ const Withdraw = () => {
       </header>
 
       <div className="max-w-md mx-auto px-4 py-4">
-        {/* Step 1: Amount Selection */}
-        {step === "amount" && (
-          <div className="animate-fade-in">
-            {/* Balance Card */}
-            <div className="bg-gradient-to-r from-success to-emerald-500 rounded-xl p-5 text-success-foreground mb-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90 mb-1">SALDO DISPONÍVEL</p>
-                  <p className="text-3xl font-bold">R$ {balance}</p>
-                  <p className="text-sm opacity-80 mt-2">Aguardando confirmação para saque</p>
-                </div>
-                <img src={coinIcon} alt="Coin" className="w-16 h-16" />
+        {/* Step 1: Amount Selection - Always visible */}
+        <div className="animate-fade-in">
+          {/* Balance Card */}
+          <div className="bg-gradient-to-r from-success to-emerald-500 rounded-xl p-5 text-success-foreground mb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm opacity-90 mb-1">SALDO DISPONÍVEL</p>
+                <p className="text-3xl font-bold">R$ {balance}</p>
+                <p className="text-sm opacity-80 mt-2">Aguardando confirmação para saque</p>
               </div>
-            </div>
-
-            {/* Amount Selection Card */}
-            <div className="bg-card rounded-xl p-5 shadow-md">
-              <h2 className="text-lg font-bold text-foreground mb-3">Sacar dinheiro</h2>
-              
-              <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-muted-foreground">
-                  <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2"/>
-                  <path d="M2 10h20" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-                <span className="text-sm">Transferência via /</span>
-                <PixIcon size={24} />
-              </div>
-
-              {/* Amount Buttons */}
-              <div className="grid grid-cols-3 gap-3 mb-4">
-                {amountOptions.map((amount) => (
-                  <button
-                    key={amount}
-                    onClick={() => setSelectedAmount(amount)}
-                    className={`py-3 rounded-lg border-2 font-semibold transition-all ${
-                      selectedAmount === amount
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-foreground hover:border-primary/50"
-                    }`}
-                  >
-                    R$ {amount}
-                  </button>
-                ))}
-              </div>
-
-              {/* Full Balance Option */}
-              <button
-                onClick={() => setSelectedAmount(balance)}
-                className={`w-full py-3 rounded-lg border-2 font-semibold mb-4 transition-all ${
-                  selectedAmount === balance
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-foreground hover:border-primary/50"
-                }`}
-              >
-                R$ {balance}
-              </button>
-
-              {/* Sacar Button */}
-              <button
-                onClick={() => setStep("method")}
-                className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-semibold text-lg transition-all hover:bg-primary/90"
-              >
-                Sacar dinheiro
-              </button>
-
-              {/* Info Text */}
-              <p className="text-sm text-muted-foreground text-center mt-4">
-                Para sacar dinheiro, você precisa de um saldo mínimo de{" "}
-                <span className="text-primary">R$ 1,5</span>.
-                <br />
-                Os limites de saque para transações individuais e mensais podem variar de acordo com o país ou região.
-              </p>
+              <img src={coinIcon} alt="Coin" className="w-16 h-16" />
             </div>
           </div>
-        )}
 
-        {/* Step 2: Method Selection */}
-        {step === "method" && (
-          <div className="animate-fade-in">
+          {/* Amount Selection Card */}
+          <div className="bg-card rounded-xl p-5 shadow-md">
+            <h2 className="text-lg font-bold text-foreground mb-3">Sacar dinheiro</h2>
+            
+            <div className="flex items-center gap-2 text-muted-foreground mb-4">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-muted-foreground">
+                <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="2"/>
+                <path d="M2 10h20" stroke="currentColor" strokeWidth="2"/>
+              </svg>
+              <span className="text-sm">Transferência via /</span>
+              <PixIcon size={24} />
+            </div>
+
+            {/* Amount Buttons */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              {amountOptions.map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => setSelectedAmount(amount)}
+                  className={`py-3 rounded-lg border-2 font-semibold transition-all ${
+                    selectedAmount === amount
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-foreground hover:border-primary/50"
+                  }`}
+                >
+                  R$ {amount}
+                </button>
+              ))}
+            </div>
+
+            {/* Full Balance Option */}
+            <button
+              onClick={() => setSelectedAmount(balance)}
+              className={`w-full py-3 rounded-lg border-2 font-semibold mb-4 transition-all ${
+                selectedAmount === balance
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-foreground hover:border-primary/50"
+              }`}
+            >
+              R$ {balance}
+            </button>
+
+            {/* Sacar Button */}
+            <button
+              onClick={() => setStep("method")}
+              className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-semibold text-lg transition-all hover:bg-primary/90"
+            >
+              Sacar dinheiro
+            </button>
+
+            {/* Info Text */}
+            <p className="text-sm text-muted-foreground text-center mt-4">
+              Para sacar dinheiro, você precisa de um saldo mínimo de{" "}
+              <span className="text-primary">R$ 1,5</span>.
+              <br />
+              Os limites de saque para transações individuais e mensais podem variar de acordo com o país ou região.
+            </p>
+          </div>
+        </div>
+
+        {/* Step 2: Method Selection - Slides up from bottom */}
+        <div
+          className={`fixed bottom-0 left-0 right-0 bg-card rounded-t-3xl shadow-2xl transition-transform duration-300 ease-out z-50 ${
+            step === "method" || step === "vincular" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "40vh" }}
+        >
+          <div className="p-4">
+            {/* Handle bar */}
+            <div className="w-12 h-1 bg-border rounded-full mx-auto mb-4" />
+            
+            <h2 className="text-lg font-bold text-foreground mb-4">Método de saque</h2>
+            
             {/* PIX Method Option */}
             <button
               onClick={() => setStep("vincular")}
-              className="w-full bg-card rounded-2xl p-4 flex items-center justify-between shadow-sm active:scale-[0.98] transition-transform duration-150"
+              className="w-full bg-secondary/30 rounded-2xl p-4 flex items-center justify-between active:scale-[0.98] transition-transform duration-150"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-[#32BCAD]/10 rounded-xl flex items-center justify-center">
@@ -321,6 +329,14 @@ const Withdraw = () => {
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
+        </div>
+
+        {/* Backdrop when method panel is open */}
+        {(step === "method" || step === "vincular") && (
+          <div 
+            className="fixed inset-0 bg-black/30 z-40 transition-opacity duration-300"
+            onClick={() => setStep("amount")}
+          />
         )}
 
         {/* Step 3: Vincular PIX Form */}
