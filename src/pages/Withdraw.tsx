@@ -1,15 +1,27 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Key } from "lucide-react";
 import coinIcon from "@/assets/coin-icon.png";
+
+type PixKeyType = "cpf" | "phone" | "email" | "random";
 
 const Withdraw = () => {
   const navigate = useNavigate();
   const balance = "2.834,72";
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState({ minutes: 10, seconds: 0 });
+  const [pixKey, setPixKey] = useState("");
+  const [pixKeyType, setPixKeyType] = useState<PixKeyType>("cpf");
+  const [pixKeyError, setPixKeyError] = useState("");
 
   const amounts = ["1,5", "5", "10"];
+
+  const pixKeyTypes: { value: PixKeyType; label: string; placeholder: string }[] = [
+    { value: "cpf", label: "CPF", placeholder: "000.000.000-00" },
+    { value: "phone", label: "Celular", placeholder: "+55 11 99999-9999" },
+    { value: "email", label: "E-mail", placeholder: "seu@email.com" },
+    { value: "random", label: "Chave aleatória", placeholder: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" },
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -27,9 +39,72 @@ const Withdraw = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const validatePixKey = (key: string, type: PixKeyType): boolean => {
+    const trimmedKey = key.trim();
+    
+    if (!trimmedKey) {
+      setPixKeyError("Digite sua chave PIX");
+      return false;
+    }
+
+    if (trimmedKey.length > 100) {
+      setPixKeyError("Chave PIX muito longa");
+      return false;
+    }
+
+    switch (type) {
+      case "cpf":
+        const cpfRegex = /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/;
+        if (!cpfRegex.test(trimmedKey)) {
+          setPixKeyError("CPF inválido. Use o formato: 000.000.000-00");
+          return false;
+        }
+        break;
+      case "phone":
+        const phoneRegex = /^\+?55?\s?\d{2}\s?\d{4,5}-?\d{4}$/;
+        if (!phoneRegex.test(trimmedKey)) {
+          setPixKeyError("Celular inválido. Use o formato: +55 11 99999-9999");
+          return false;
+        }
+        break;
+      case "email":
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(trimmedKey)) {
+          setPixKeyError("E-mail inválido");
+          return false;
+        }
+        break;
+      case "random":
+        const uuidRegex = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+        if (!uuidRegex.test(trimmedKey)) {
+          setPixKeyError("Chave aleatória inválida");
+          return false;
+        }
+        break;
+    }
+
+    setPixKeyError("");
+    return true;
+  };
+
+  const handlePixKeyChange = (value: string) => {
+    setPixKey(value);
+    if (pixKeyError) {
+      setPixKeyError("");
+    }
+  };
+
   const handleWithdraw = () => {
+    if (!validatePixKey(pixKey, pixKeyType)) {
+      return;
+    }
+    
+    if (!selectedAmount) {
+      return;
+    }
+
     // Handle withdrawal logic
-    console.log("Withdrawing:", selectedAmount || balance);
+    console.log("Withdrawing:", selectedAmount, "to PIX:", pixKey);
   };
 
   return (
@@ -70,7 +145,7 @@ const Withdraw = () => {
           <h2 className="text-lg font-semibold text-foreground mb-4">Sacar dinheiro</h2>
           
           {/* PIX Transfer */}
-          <div className="flex items-center gap-2 mb-5 text-muted-foreground">
+          <div className="flex items-center gap-2 mb-4 text-muted-foreground">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
@@ -80,6 +155,55 @@ const Withdraw = () => {
               <path d="M401.76 120.81c-20.056 0-38.928 7.808-53.12 22l-76.693 76.692c-5.385 5.404-14.765 5.384-20.15 0L174.808 142.513c-14.191-14.172-33.045-21.98-53.12-21.98h-15.098l97.138-97.139c30.326-30.344 79.505-30.344 109.85 0l97.415 97.416h-9.232z" fill="#32BCAD"/>
               <path d="M486.36 256l-74.68-74.68a53.34 53.34 0 01-8.83-10.11h-49.73a29.05 29.05 0 00-20.54 8.51l-76.55 76.55a44.17 44.17 0 01-62.54 0l-76.55-76.55a29.05 29.05 0 00-20.54-8.51H50.51a53.34 53.34 0 01-8.83 10.11L25.64 256l74.68 74.68a53.34 53.34 0 018.83 10.11h45.85a29.05 29.05 0 0020.54-8.51l76.55-76.55a44.17 44.17 0 0162.54 0l76.55 76.55a29.05 29.05 0 0020.54 8.51h49.73a53.34 53.34 0 018.83-10.11z" fill="#32BCAD"/>
             </svg>
+          </div>
+
+          {/* PIX Key Type Selector */}
+          <div className="mb-3">
+            <label className="text-sm font-medium text-foreground mb-2 block">Tipo de chave PIX</label>
+            <div className="grid grid-cols-4 gap-2">
+              {pixKeyTypes.map((type) => (
+                <button
+                  key={type.value}
+                  onClick={() => {
+                    setPixKeyType(type.value);
+                    setPixKey("");
+                    setPixKeyError("");
+                  }}
+                  className={`py-2 px-2 rounded-lg text-xs font-medium transition-all ${
+                    pixKeyType === type.value
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                  }`}
+                >
+                  {type.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* PIX Key Input */}
+          <div className="mb-5">
+            <label className="text-sm font-medium text-foreground mb-2 block">
+              Sua chave PIX
+            </label>
+            <div className="relative">
+              <Key className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="text"
+                value={pixKey}
+                onChange={(e) => handlePixKeyChange(e.target.value)}
+                placeholder={pixKeyTypes.find(t => t.value === pixKeyType)?.placeholder}
+                maxLength={100}
+                className={`w-full pl-10 pr-4 py-3 rounded-lg border-2 bg-card text-foreground placeholder:text-muted-foreground outline-none transition-all ${
+                  pixKeyError
+                    ? "border-destructive focus:border-destructive"
+                    : "border-border focus:border-primary"
+                }`}
+              />
+            </div>
+            {pixKeyError && (
+              <p className="text-destructive text-sm mt-1">{pixKeyError}</p>
+            )}
           </div>
 
           {/* Amount Buttons */}
