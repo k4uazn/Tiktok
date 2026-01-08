@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BalanceCard } from "@/components/BalanceCard";
 import { CongratulationsCard } from "@/components/CongratulationsCard";
 import { CheckInCard } from "@/components/CheckInCard";
@@ -6,6 +7,7 @@ import { TaskCard } from "@/components/TaskCard";
 import { RewardModal } from "@/components/RewardModal";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(true);
   const balance = "2.834,72";
 
@@ -29,7 +31,11 @@ const Index = () => {
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
   const handleWithdraw = () => {
-    setShowModal(true);
+    navigate("/sacar");
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
   };
 
   return (
