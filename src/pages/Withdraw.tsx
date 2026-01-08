@@ -303,74 +303,23 @@ const Withdraw = () => {
 
         {/* Step 2: Method Selection */}
         {step === "method" && (
-          <div className="animate-fade-in space-y-4">
-            {/* Balance Card */}
-            <div className="bg-gradient-to-r from-success to-emerald-500 rounded-xl p-5 text-success-foreground">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90 mb-1">SALDO DISPONÍVEL</p>
-                  <p className="text-3xl font-bold">R$ {balance}</p>
-                  <p className="text-sm opacity-80 mt-2">Aguardando confirmação para saque</p>
+          <div className="animate-fade-in">
+            {/* PIX Method Option */}
+            <button
+              onClick={() => setStep("vincular")}
+              className="w-full bg-card rounded-2xl p-4 flex items-center justify-between shadow-sm active:scale-[0.98] transition-transform duration-150"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#32BCAD]/10 rounded-xl flex items-center justify-center">
+                  <PixIcon size={28} />
                 </div>
-                <img src={coinIcon} alt="Coin" className="w-16 h-16" />
-              </div>
-            </div>
-
-            {/* PIX Method Card */}
-            <div className="bg-card rounded-xl shadow-md overflow-hidden">
-              <button
-                onClick={() => setStep("vincular")}
-                className="w-full p-5 flex items-center justify-between hover:bg-secondary/50 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-secondary rounded-xl flex items-center justify-center">
-                    <PixIcon size={36} />
-                  </div>
-                  <div className="text-left">
-                    <p className="font-bold text-lg text-foreground">PIX</p>
-                    <p className="text-sm text-primary">Recebimento imediato</p>
-                  </div>
+                <div className="text-left">
+                  <p className="font-semibold text-foreground text-base">PIX</p>
+                  <p className="text-sm text-[#32BCAD]">Recebimento imediato</p>
                 </div>
-                <ChevronRight className="w-6 h-6 text-muted-foreground" />
-              </button>
-            </div>
-
-            {/* Other Options - Disabled */}
-            <div className="bg-card rounded-xl p-5 shadow-md">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="font-semibold text-foreground">Obtenha Moedas para uma LIVE</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Use Moedas para enviar presentes virtuais para seus hosts de live Favoritos.
-                  </p>
-                </div>
-                <span className="text-2xl">🌹</span>
               </div>
-              <button className="w-full py-2.5 rounded-lg bg-secondary text-muted-foreground font-medium">
-                Indisponível
-              </button>
-            </div>
-
-            <div className="bg-card rounded-xl p-5 shadow-md">
-              <h3 className="font-semibold text-foreground mb-4">Recarga móvel</h3>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-muted-foreground">+55</span>
-                <div className="h-6 w-px bg-border" />
-                <input
-                  type="text"
-                  placeholder="12345678901"
-                  className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
-                  disabled
-                />
-              </div>
-              <button className="w-full py-2.5 rounded-lg bg-secondary text-muted-foreground font-medium mb-3">
-                Indisponível
-              </button>
-              <p className="text-sm text-muted-foreground">
-                Você precisa de um saldo mínimo de{" "}
-                <span className="text-primary">R$ 10</span> para recarga de celular
-              </p>
-            </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </button>
           </div>
         )}
 
