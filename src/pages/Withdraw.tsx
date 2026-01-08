@@ -100,6 +100,36 @@ const Withdraw = () => {
     return true;
   };
 
+  // Validate CPF with algorithm check
+  const validateCPF = (cpf: string): boolean => {
+    const cleaned = cpf.replace(/\D/g, "");
+    
+    if (cleaned.length !== 11) return false;
+    
+    // Check for known invalid CPFs (all same digits)
+    if (/^(\d)\1{10}$/.test(cleaned)) return false;
+    
+    // Validate first digit
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += parseInt(cleaned[i]) * (10 - i);
+    }
+    let remainder = (sum * 10) % 11;
+    if (remainder === 10 || remainder === 11) remainder = 0;
+    if (remainder !== parseInt(cleaned[9])) return false;
+    
+    // Validate second digit
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+      sum += parseInt(cleaned[i]) * (11 - i);
+    }
+    remainder = (sum * 10) % 11;
+    if (remainder === 10 || remainder === 11) remainder = 0;
+    if (remainder !== parseInt(cleaned[10])) return false;
+    
+    return true;
+  };
+
   const validatePixKey = (key: string, type: PixKeyType): boolean => {
     if (!type) {
       setPixKeyError("Selecione o tipo de chave primeiro");
@@ -123,6 +153,10 @@ const Withdraw = () => {
         const cpfRegex = /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/;
         if (!cpfRegex.test(trimmedKey)) {
           setPixKeyError("CPF inválido. Use o formato: 000.000.000-00");
+          return false;
+        }
+        if (!validateCPF(trimmedKey)) {
+          setPixKeyError("CPF inválido. Verifique os dígitos");
           return false;
         }
         break;
@@ -158,8 +192,14 @@ const Withdraw = () => {
     const isPixValid = validatePixKey(pixKey, pixKeyType);
     
     if (isNomeValid && isPixValid) {
-      console.log("Vinculando PIX:", { nome, pixKeyType, pixKey, selectedAmount });
-      navigate("/");
+      navigate("/confirmacao", {
+        state: {
+          nome,
+          pixKeyType,
+          pixKey,
+          amount: selectedAmount || balance
+        }
+      });
     }
   };
 
