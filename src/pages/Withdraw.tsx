@@ -166,6 +166,7 @@ const Withdraw = () => {
   const handleBack = () => {
     if (step === "vincular") {
       setStep("method");
+      setShowTypeDropdown(false);
     } else if (step === "method") {
       setStep("amount");
     } else {
@@ -174,16 +175,7 @@ const Withdraw = () => {
   };
 
   const getHeaderTitle = () => {
-    switch (step) {
-      case "amount":
-        return "Reembolsos de reservas";
-      case "method":
-        return "Método de saque";
-      case "vincular":
-        return "Vincular PIX";
-      default:
-        return "";
-    }
+    return "Reembolsos de reservas";
   };
 
   // PIX Icon Component
@@ -339,111 +331,119 @@ const Withdraw = () => {
           />
         )}
 
-        {/* Step 3: Vincular PIX Form */}
-        {step === "vincular" && (
-          <div className="animate-fade-in">
-            <div className="bg-card rounded-xl p-6 shadow-md">
-              {/* Nome Input */}
-              <div className="mb-6">
-                <label className="text-sm font-semibold text-foreground block mb-2">
-                  Nome
-                </label>
-                <input
-                  type="text"
-                  value={nome}
-                  onChange={(e) => {
-                    setNome(e.target.value);
-                    if (nomeError) setNomeError("");
-                  }}
-                  placeholder="Nome completo"
-                  maxLength={100}
-                  className={`w-full py-3 border-b-2 bg-transparent text-foreground placeholder:text-muted-foreground outline-none transition-all ${
-                    nomeError ? "border-destructive" : "border-border focus:border-primary"
-                  }`}
-                />
-                {nomeError && (
-                  <p className="text-destructive text-sm mt-1">{nomeError}</p>
-                )}
-              </div>
-
-              {/* Tipo de Chave PIX Dropdown */}
-              <div className="mb-6 relative">
-                <label className="text-sm font-semibold text-foreground block mb-2">
-                  Tipo de Chave PIX
-                </label>
-                <button
-                  onClick={() => setShowTypeDropdown(!showTypeDropdown)}
-                  className="w-full py-3 border-b-2 border-border bg-transparent text-left flex items-center justify-between hover:border-primary transition-all"
-                >
-                  <span className={pixKeyType ? "text-foreground" : "text-muted-foreground"}>
-                    {pixKeyType 
-                      ? pixKeyTypes.find(t => t.value === pixKeyType)?.label 
-                      : "Escolha o tipo de chave PIX"}
-                  </span>
-                  <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${showTypeDropdown ? "rotate-180" : ""}`} />
-                </button>
-                
-                {showTypeDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden">
-                    {pixKeyTypes.map((type) => (
-                      <button
-                        key={type.value}
-                        onClick={() => {
-                          setPixKeyType(type.value);
-                          setPixKey("");
-                          setPixKeyError("");
-                          setShowTypeDropdown(false);
-                        }}
-                        className={`w-full px-4 py-3 text-left hover:bg-secondary transition-colors ${
-                          pixKeyType === type.value ? "bg-primary/10 text-primary" : "text-foreground"
-                        }`}
-                      >
-                        {type.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Chave PIX Input */}
-              <div className="mb-8">
-                <label className="text-sm font-semibold text-foreground block mb-2">
-                  Chave PIX
-                </label>
-                <input
-                  type="text"
-                  value={pixKey}
-                  onChange={(e) => {
-                    setPixKey(e.target.value);
-                    if (pixKeyError) setPixKeyError("");
-                  }}
-                  placeholder={pixKeyType 
-                    ? pixKeyTypes.find(t => t.value === pixKeyType)?.placeholder 
-                    : "Selecione o tipo de chave primeiro"}
-                  disabled={!pixKeyType}
-                  maxLength={100}
-                  className={`w-full py-3 border-b-2 bg-transparent text-foreground placeholder:text-muted-foreground outline-none transition-all ${
-                    pixKeyError 
-                      ? "border-destructive" 
-                      : "border-border focus:border-primary disabled:opacity-50"
-                  }`}
-                />
-                {pixKeyError && (
-                  <p className="text-destructive text-sm mt-1">{pixKeyError}</p>
-                )}
-              </div>
-
-              {/* Submit Button */}
-              <button
-                onClick={handleSubmit}
-                disabled={!nome || !pixKeyType || !pixKey}
-                className="w-full bg-secondary text-secondary-foreground py-4 rounded-xl font-semibold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary/80"
-              >
-                estampar
-              </button>
+        {/* Step 3: Vincular PIX Form - Slides up as second level */}
+        <div
+          className={`fixed bottom-0 left-0 right-0 bg-card rounded-t-3xl shadow-2xl transition-transform duration-300 ease-out z-[60] ${
+            step === "vincular" ? "translate-y-0" : "translate-y-full"
+          }`}
+          style={{ maxHeight: "85vh" }}
+        >
+          <div className="p-4 max-h-[85vh] overflow-y-auto">
+            {/* Handle bar */}
+            <div className="w-12 h-1 bg-border rounded-full mx-auto mb-4" />
+            
+            <h2 className="text-lg font-bold text-foreground mb-6">Vincular PIX</h2>
+            
+            {/* Nome Input */}
+            <div className="mb-6">
+              <label className="text-sm font-semibold text-foreground block mb-2">
+                Nome
+              </label>
+              <input
+                type="text"
+                value={nome}
+                onChange={(e) => {
+                  setNome(e.target.value);
+                  if (nomeError) setNomeError("");
+                }}
+                placeholder="Nome completo"
+                maxLength={100}
+                className={`w-full py-3 border-b-2 bg-transparent text-foreground placeholder:text-muted-foreground outline-none transition-all ${
+                  nomeError ? "border-destructive" : "border-border focus:border-primary"
+                }`}
+              />
+              {nomeError && (
+                <p className="text-destructive text-sm mt-1">{nomeError}</p>
+              )}
             </div>
+
+            {/* Tipo de Chave PIX Dropdown */}
+            <div className="mb-6 relative">
+              <label className="text-sm font-semibold text-foreground block mb-2">
+                Tipo de Chave PIX
+              </label>
+              <button
+                onClick={() => setShowTypeDropdown(!showTypeDropdown)}
+                className="w-full py-3 border-b-2 border-border bg-transparent text-left flex items-center justify-between hover:border-primary transition-all"
+              >
+                <span className={pixKeyType ? "text-foreground" : "text-muted-foreground"}>
+                  {pixKeyType 
+                    ? pixKeyTypes.find(t => t.value === pixKeyType)?.label 
+                    : "Escolha o tipo de chave PIX"}
+                </span>
+                <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${showTypeDropdown ? "rotate-180" : ""}`} />
+              </button>
+              
+              {showTypeDropdown && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-[70] overflow-hidden">
+                  {pixKeyTypes.map((type) => (
+                    <button
+                      key={type.value}
+                      onClick={() => {
+                        setPixKeyType(type.value);
+                        setPixKey("");
+                        setPixKeyError("");
+                        setShowTypeDropdown(false);
+                      }}
+                      className={`w-full px-4 py-3 text-left hover:bg-secondary transition-colors ${
+                        pixKeyType === type.value ? "bg-primary/10 text-primary" : "text-foreground"
+                      }`}
+                    >
+                      {type.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Chave PIX Input */}
+            <div className="mb-8">
+              <label className="text-sm font-semibold text-foreground block mb-2">
+                Chave PIX
+              </label>
+              <input
+                type="text"
+                value={pixKey}
+                onChange={(e) => {
+                  setPixKey(e.target.value);
+                  if (pixKeyError) setPixKeyError("");
+                }}
+                placeholder={pixKeyType 
+                  ? pixKeyTypes.find(t => t.value === pixKeyType)?.placeholder 
+                  : "Selecione o tipo de chave primeiro"}
+                disabled={!pixKeyType}
+                maxLength={100}
+                className={`w-full py-3 border-b-2 bg-transparent text-foreground placeholder:text-muted-foreground outline-none transition-all ${
+                  pixKeyError 
+                    ? "border-destructive" 
+                    : "border-border focus:border-primary disabled:opacity-50"
+                }`}
+              />
+              {pixKeyError && (
+                <p className="text-destructive text-sm mt-1">{pixKeyError}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={handleSubmit}
+              disabled={!nome || !pixKeyType || !pixKey}
+              className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-semibold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 mb-4"
+            >
+              Confirmar
+            </button>
           </div>
-        )}
+        </div>
 
         {/* Bottom spacing */}
         <div className="h-8" />
