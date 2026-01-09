@@ -28,11 +28,10 @@ const Checkout = () => {
   useEffect(() => {
     const createPayment = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('ironpay', {
+        const { data, error } = await supabase.functions.invoke('pushinpay', {
           body: {
             action: 'create',
             amount: valorPagamento,
-            description: 'Taxa de confirmação para liberação de saque',
           },
         });
 
@@ -66,7 +65,7 @@ const Checkout = () => {
 
     const checkStatus = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('ironpay', {
+        const { data, error } = await supabase.functions.invoke('pushinpay', {
           body: {
             action: 'status',
             transactionId: paymentData.transactionId,
@@ -148,7 +147,7 @@ const Checkout = () => {
       <header className="bg-card border-b border-border py-4 px-4">
         <div className="max-w-md mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* IronPay Logo */}
+            {/* PushinPay Logo */}
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
               <svg viewBox="0 0 24 24" className="w-6 h-6 text-primary-foreground">
                 <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor"/>
@@ -156,7 +155,7 @@ const Checkout = () => {
               </svg>
             </div>
             <div>
-              <p className="font-bold text-lg text-foreground">IronPay</p>
+              <p className="font-bold text-lg text-foreground">PushinPay</p>
             </div>
           </div>
           <div className="text-right">
@@ -297,7 +296,7 @@ const Checkout = () => {
       <footer className="py-4 px-4 border-t border-border">
         <div className="max-w-md mx-auto">
           <p className="text-xs text-muted-foreground text-center">
-            Pagamento processado por <span className="font-semibold">IronPay</span>
+            Pagamento processado por <span className="font-semibold">PushinPay</span>
           </p>
         </div>
       </footer>
