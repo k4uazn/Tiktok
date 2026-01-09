@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Copy, Check, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 interface PaymentData {
@@ -15,9 +14,9 @@ interface PaymentData {
 const Checkout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
   const { nome, amount } = location.state || {};
   const [copied, setCopied] = useState(false);
+  const [showCopiedMessage, setShowCopiedMessage] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<"loading" | "pending" | "paid" | "error">("loading");
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -76,10 +75,6 @@ const Checkout = () => {
 
         if (data.success && data.status === 'paid') {
           setPaymentStatus("paid");
-          toast({
-            title: "Pagamento confirmado!",
-            description: "Redirecionando...",
-          });
           setTimeout(() => {
             navigate("/sucesso", { state: { nome, amount } });
           }, 2000);
@@ -91,7 +86,7 @@ const Checkout = () => {
 
     const interval = setInterval(checkStatus, 5000);
     return () => clearInterval(interval);
-  }, [paymentData?.transactionId, paymentStatus, navigate, nome, amount, toast]);
+  }, [paymentData?.transactionId, paymentStatus, navigate, nome, amount]);
 
   const pixCode = paymentData?.pixCode || "Gerando código PIX...";
 
@@ -132,17 +127,11 @@ const Checkout = () => {
     
     if (success) {
       setCopied(true);
-      toast({
-        title: "Código copiado!",
-        description: "Cole no seu app do banco para pagar",
-      });
-      setTimeout(() => setCopied(false), 3000);
-    } else {
-      toast({
-        title: "Erro ao copiar",
-        description: "Tente copiar manualmente",
-        variant: "destructive",
-      });
+      setShowCopiedMessage(true);
+      setTimeout(() => {
+        setCopied(false);
+        setShowCopiedMessage(false);
+      }, 3000);
     }
   };
 
@@ -300,6 +289,19 @@ const Checkout = () => {
               </>
             )}
           </button>
+          
+          {/* Copied Message */}
+          {showCopiedMessage && (
+            <div className="mt-4 bg-success/20 border border-success/30 rounded-xl p-4 text-center animate-in fade-in duration-300">
+              <div className="flex items-center justify-center gap-2 text-success">
+                <Check className="w-5 h-5" />
+                <span className="font-semibold">Seu código foi copiado!</span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">
+                Cole no seu app do banco para pagar
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Payment Status */}
