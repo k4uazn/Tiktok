@@ -98,15 +98,46 @@ const Checkout = () => {
   const handleCopy = async () => {
     if (!paymentData?.pixCode) return;
     
-    try {
-      await navigator.clipboard.writeText(paymentData.pixCode);
+    const copyToClipboard = async (text: string): Promise<boolean> => {
+      // Try modern clipboard API first
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch {
+          // Fall through to fallback
+        }
+      }
+      
+      // Fallback for mobile browsers
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
+        return successful;
+      } catch {
+        return false;
+      }
+    };
+
+    const success = await copyToClipboard(paymentData.pixCode);
+    
+    if (success) {
       setCopied(true);
       toast({
         title: "Código copiado!",
         description: "Cole no seu app do banco para pagar",
       });
       setTimeout(() => setCopied(false), 3000);
-    } catch (err) {
+    } else {
       toast({
         title: "Erro ao copiar",
         description: "Tente copiar manualmente",
