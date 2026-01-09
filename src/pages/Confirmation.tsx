@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Clock, Check } from "lucide-react";
 import coinIcon from "@/assets/coin-icon.png";
@@ -10,6 +11,13 @@ const Confirmation = () => {
   const balance = amount || "2.834,72";
   const taxaReembolso = "32,67";
   const currentDate = new Date().toLocaleDateString("pt-BR");
+
+  // Redirect to home if accessed directly without state
+  useEffect(() => {
+    if (!location.state) {
+      navigate("/", { replace: true });
+    }
+  }, [location.state, navigate]);
 
   const formatPixKey = () => {
     if (pixKeyType === "cpf" && pixKey) {
