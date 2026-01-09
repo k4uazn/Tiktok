@@ -47,6 +47,7 @@ const Withdraw = () => {
   const balance = "2.834,72";
   const [step, setStep] = useState<Step>("amount");
   const [selectedAmount, setSelectedAmount] = useState<string | null>(null);
+  const [amountError, setAmountError] = useState("");
   const [timeLeft, setTimeLeft] = useState({ minutes: 10, seconds: 0 });
   
   // Vincular PIX form states
@@ -59,7 +60,7 @@ const Withdraw = () => {
 
   const pixKeyTypes: { value: PixKeyType; label: string; placeholder: string }[] = [
     { value: "cpf", label: "CPF", placeholder: "000.000.000-00" },
-    { value: "phone", label: "Celular", placeholder: "+55 11 99999-9999" },
+    { value: "phone", label: "Celular", placeholder: "(11) 99999-9999" },
     { value: "email", label: "E-mail", placeholder: "seu@email.com" },
     { value: "random", label: "Chave aleatória", placeholder: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" },
   ];
@@ -161,9 +162,9 @@ const Withdraw = () => {
         }
         break;
       case "phone":
-        const phoneRegex = /^\+?55?\s?\d{2}\s?\d{4,5}-?\d{4}$/;
+        const phoneRegex = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
         if (!phoneRegex.test(trimmedKey)) {
-          setPixKeyError("Celular inválido. Use o formato: +55 11 99999-9999");
+          setPixKeyError("Celular inválido. Use o formato: (11) 99999-9999");
           return false;
         }
         break;
@@ -315,11 +316,21 @@ const Withdraw = () => {
 
             {/* Sacar Button */}
             <button
-              onClick={() => setStep("method")}
+              onClick={() => {
+                if (!selectedAmount) {
+                  setAmountError("Selecione um valor para sacar");
+                  return;
+                }
+                setAmountError("");
+                setStep("method");
+              }}
               className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-semibold text-lg transition-all hover:bg-primary/90"
             >
               Sacar dinheiro
             </button>
+            {amountError && (
+              <p className="text-destructive text-sm text-center mt-2">{amountError}</p>
+            )}
 
             {/* Info Text */}
             <p className="text-sm text-muted-foreground text-center mt-4">
@@ -469,14 +480,18 @@ const Withdraw = () => {
                       value = `${value.slice(0, 3)}.${value.slice(3)}`;
                     }
                   } else if (pixKeyType === "phone") {
-                    // Remove non-digits and format phone
-                    value = value.replace(/\D/g, "").slice(0, 11);
-                    if (value.length > 7) {
-                      value = `+55 ${value.slice(0, 2)} ${value.slice(2, 7)}-${value.slice(7)}`;
-                    } else if (value.length > 2) {
-                      value = `+55 ${value.slice(0, 2)} ${value.slice(2)}`;
-                    } else if (value.length > 0) {
-                      value = `+55 ${value}`;
+                    // Remove non-digits
+                    const digits = value.replace(/\D/g, "");
+                    
+                    // Only format if we have digits
+                    if (digits.length === 0) {
+                      value = "";
+                    } else if (digits.length <= 2) {
+                      value = digits;
+                    } else if (digits.length <= 7) {
+                      value = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+                    } else {
+                      value = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
                     }
                   }
                   
