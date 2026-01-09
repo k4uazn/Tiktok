@@ -36,7 +36,7 @@ const Confirmation = () => {
       <header className="bg-foreground text-primary-foreground py-4 px-4">
         <div className="max-w-md mx-auto">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate(-1)} className="p-1">
+            <button onClick={() => navigate("/sacar")} className="p-1">
               <ArrowLeft className="w-5 h-5" />
             </button>
             <h1 className="text-lg font-semibold flex-1 text-center pr-6">
