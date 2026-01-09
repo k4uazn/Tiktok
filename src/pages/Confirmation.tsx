@@ -148,8 +148,12 @@ const Confirmation = () => {
         {/* Pay Button */}
         <button
           onClick={() => {
-            // Handle payment action
-            console.log("Pagar taxa para liberar saque");
+            navigate("/sucesso", {
+              state: {
+                nome,
+                amount: balance
+              }
+            });
           }}
           className="w-full bg-destructive text-destructive-foreground py-4 rounded-xl font-semibold text-lg transition-all hover:bg-destructive/90 mb-3"
         >
