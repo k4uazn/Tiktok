@@ -148,7 +148,7 @@ const Confirmation = () => {
         {/* Pay Button */}
         <button
           onClick={() => {
-            navigate("/sucesso", {
+            navigate("/checkout", {
               state: {
                 nome,
                 amount: balance
