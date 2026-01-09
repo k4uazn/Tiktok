@@ -1,1 +1,4 @@
 project_id = "vbzrmgyuyrastddjhttn"
+
+[functions.pushinpay]
+verify_jwt = false

