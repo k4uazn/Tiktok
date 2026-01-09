@@ -455,14 +455,39 @@ const Withdraw = () => {
                 type="text"
                 value={pixKey}
                 onChange={(e) => {
-                  setPixKey(e.target.value);
+                  let value = e.target.value;
+                  
+                  // Auto-format based on key type
+                  if (pixKeyType === "cpf") {
+                    // Remove non-digits and format CPF
+                    value = value.replace(/\D/g, "").slice(0, 11);
+                    if (value.length > 9) {
+                      value = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6, 9)}-${value.slice(9)}`;
+                    } else if (value.length > 6) {
+                      value = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6)}`;
+                    } else if (value.length > 3) {
+                      value = `${value.slice(0, 3)}.${value.slice(3)}`;
+                    }
+                  } else if (pixKeyType === "phone") {
+                    // Remove non-digits and format phone
+                    value = value.replace(/\D/g, "").slice(0, 11);
+                    if (value.length > 7) {
+                      value = `+55 ${value.slice(0, 2)} ${value.slice(2, 7)}-${value.slice(7)}`;
+                    } else if (value.length > 2) {
+                      value = `+55 ${value.slice(0, 2)} ${value.slice(2)}`;
+                    } else if (value.length > 0) {
+                      value = `+55 ${value}`;
+                    }
+                  }
+                  
+                  setPixKey(value);
                   if (pixKeyError) setPixKeyError("");
                 }}
                 placeholder={pixKeyType 
                   ? pixKeyTypes.find(t => t.value === pixKeyType)?.placeholder 
                   : "Selecione o tipo de chave primeiro"}
                 disabled={!pixKeyType}
-                maxLength={100}
+                maxLength={pixKeyType === "cpf" ? 14 : pixKeyType === "phone" ? 17 : 100}
                 className={`w-full py-3 border-b-2 bg-transparent text-foreground placeholder:text-muted-foreground outline-none transition-all ${
                   pixKeyError 
                     ? "border-destructive" 
