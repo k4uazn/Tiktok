@@ -128,10 +128,17 @@ const Checkout = () => {
     if (success) {
       setCopied(true);
       setShowCopiedMessage(true);
+      // Navigate to awaiting payment page after showing copied message
       setTimeout(() => {
-        setCopied(false);
-        setShowCopiedMessage(false);
-      }, 3000);
+        navigate("/aguardando", { 
+          state: { 
+            nome, 
+            amount, 
+            transactionId: paymentData.transactionId,
+            pixCode: paymentData.pixCode 
+          } 
+        });
+      }, 1500);
     }
   };
 
