@@ -264,7 +264,10 @@ const Checkout = () => {
             PIX Copia e Cola
           </p>
           <div className="bg-secondary/30 rounded-xl p-3 mb-4">
-            <p className="text-sm text-muted-foreground font-mono break-all leading-relaxed">
+            <p
+              className="text-sm text-muted-foreground font-mono break-all leading-relaxed"
+              translate="no"
+            >
               {pixCode}
             </p>
           </div>
@@ -295,7 +298,7 @@ const Checkout = () => {
             <div className="mt-4 bg-success/20 border border-success/30 rounded-xl p-4 text-center animate-in fade-in duration-300">
               <div className="flex items-center justify-center gap-2 text-success">
                 <Check className="w-5 h-5" />
-                <span className="font-semibold">Seu código foi copiado!</span>
+                <span className="font-semibold">Seu codico foi copiado!</span>
               </div>
               <p className="text-sm text-muted-foreground mt-1">
                 Cole no seu app do banco para pagar
